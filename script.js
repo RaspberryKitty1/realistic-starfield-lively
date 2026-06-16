@@ -1,18 +1,19 @@
 const canvas = document.getElementById("starfield");
 const ctx = canvas.getContext("2d");
+const benchmark = new BenchmarkOverlay();
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
+let showBenchmark = true;
 
 const layers = [
-  { count: 2000, speed: 0.01, radius: 0.3, stars: [] },
-  { count: 1700, speed: 0.04, radius: 0.7, stars: [] },
-  { count: 1500, speed: 0.1, radius: 1.2, stars: [] }
+  { count: 800, speed: 0.01, radius: 0.3, stars: [] },
+  { count: 600, speed: 0.04, radius: 0.7, stars: [] },
+  { count: 300, speed: 0.1, radius: 1.2, stars: [] },
 ];
 
 const nebulaLayers = [];
 const starColors = ["#FFFFFF", "#FFE9C4", "#D4FBFF", "#FFD1DC"];
 const nebulaCanvases = [];
-const orbs = [];
 let frameCount = 0;
 
 // Shooting star pool
@@ -20,17 +21,6 @@ const MAX_SHOOTING_STARS = 20;
 const shootingStarPool = [];
 for (let i = 0; i < MAX_SHOOTING_STARS; i++) {
   shootingStarPool.push({ active: false });
-}
-
-// drifting orb(s)
-for (let i = 0; i < 1; i++) {
-  orbs.push({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    dx: (Math.random() - 0.5) * 0.3,
-    dy: (Math.random() - 0.5) * 0.3,
-    radius: 30
-  });
 }
 
 function hexToRGB(hex) {
@@ -43,7 +33,7 @@ function hexToRGB(hex) {
 
 function generateStarsAndNebula() {
   // Stars
-  layers.forEach(layer => {
+  layers.forEach((layer) => {
     layer.stars = [];
     for (let i = 0; i < layer.count; i++) {
       const x = Math.random() * canvas.width;
@@ -52,54 +42,35 @@ function generateStarsAndNebula() {
       const alpha = Math.random() * 0.8 + 0.2;
       const color = starColors[Math.floor(Math.random() * starColors.length)];
       layer.stars.push({
-        x, y, radius, alpha, color,
+        x,
+        y,
+        radius,
+        alpha,
+        color,
         dx: (Math.random() - 0.5) * layer.speed,
-        dy: (Math.random() - 0.5) * layer.speed
+        dy: (Math.random() - 0.5) * layer.speed,
       });
     }
-  });
-
-  // Nebula layers
-  nebulaLayers.length = 0;
-  for (let i = 0; i < 3; i++) {
-    const n = {
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height * 0.8,
-      radius: 250 + Math.random() * 300,
-      colors: ["#489BCF", "#4A61A4", "#2E1B49"],
-      alpha: 0.1 + Math.random() * 0.15,
-      dx: (Math.random() - 0.5) * 0.02,
-      dy: (Math.random() - 0.5) * 0.01
-    };
-    nebulaLayers.push(n);
-  }
-}
-
-function generateNebulaCanvases() {
-  nebulaCanvases.length = 0;
-  nebulaLayers.forEach(n => {
-    const off = document.createElement("canvas");
-    off.width = n.radius * 2;
-    off.height = n.radius * 2;
-    const offCtx = off.getContext("2d");
-
-    const grad = offCtx.createRadialGradient(
-      n.radius, n.radius, n.radius * 0.1,
-      n.radius, n.radius, n.radius
-    );
-    grad.addColorStop(0, `rgba(${hexToRGB(n.colors[0])},${n.alpha})`);
-    grad.addColorStop(0.5, `rgba(${hexToRGB(n.colors[1])},${n.alpha * 0.7})`);
-    grad.addColorStop(1, `rgba(${hexToRGB(n.colors[2])},0)`);
-
-    offCtx.fillStyle = grad;
-    offCtx.fillRect(0, 0, off.width, off.height);
-
-    nebulaCanvases.push(off);
   });
 }
 
 generateStarsAndNebula();
-generateNebulaCanvases();
+
+function livelyPropertyListener(name, value) {
+  if (name === "starDensity") {
+    value = Number(value);
+
+    layers[0].count = Math.floor(value * 0.405);
+    layers[1].count = Math.floor(value * 0.357);
+    layers[2].count = Math.floor(value * 0.238);
+
+    generateStarsAndNebula();
+  }
+
+  if (name === "showBenchmark") {
+    showBenchmark = value;
+  }
+}
 
 let lastWidth = canvas.width;
 let lastHeight = canvas.height;
@@ -113,30 +84,32 @@ function resize() {
   canvas.width = newWidth;
   canvas.height = newHeight;
 
-  layers.forEach(layer =>
-    layer.stars.forEach(star => {
+  layers.forEach((layer) =>
+    layer.stars.forEach((star) => {
       star.x *= xRatio;
       star.y *= yRatio;
-    })
+    }),
   );
-  nebulaLayers.forEach(n => {
+  nebulaLayers.forEach((n) => {
     n.x *= xRatio;
     n.y *= yRatio;
   });
-  orbs.forEach(o => {
+  orbs.forEach((o) => {
     o.x *= xRatio;
     o.y *= yRatio;
   });
 
   lastWidth = newWidth;
   lastHeight = newHeight;
+
+  generateStarsAndNebula();
 }
 
 window.addEventListener("resize", resize);
 
 // Spawn shooting star using object pool
 function spawnShootingStarCanvas() {
-  const star = shootingStarPool.find(s => !s.active);
+  const star = shootingStarPool.find((s) => !s.active);
   if (!star) return;
 
   star.active = true;
@@ -149,20 +122,25 @@ function spawnShootingStarCanvas() {
   star.color = colors[Math.floor(Math.random() * colors.length)];
 }
 
-setInterval(() => {
-  if (!document.hidden && Math.random() < 0.7) spawnShootingStarCanvas();
-}, 2000 + Math.random() * 3000);
+setInterval(
+  () => {
+    if (!document.hidden && Math.random() < 0.7) spawnShootingStarCanvas();
+  },
+  2000 + Math.random() * 3000,
+);
 
 function drawShootingStars() {
-  shootingStarPool.forEach(s => {
+  shootingStarPool.forEach((s) => {
     if (!s.active) return;
 
     const dx = Math.cos(s.angle) * s.speed;
     const dy = Math.sin(s.angle) * s.speed;
 
     if (
-      s.x + s.length < 0 || s.x - s.length > canvas.width ||
-      s.y + s.length < 0 || s.y - s.length > canvas.height
+      s.x + s.length < 0 ||
+      s.x - s.length > canvas.width ||
+      s.y + s.length < 0 ||
+      s.y - s.length > canvas.height
     ) {
       s.active = false;
       return;
@@ -172,7 +150,7 @@ function drawShootingStars() {
       s.x,
       s.y,
       s.x - dx * s.length,
-      s.y - dy * s.length
+      s.y - dy * s.length,
     );
     grad.addColorStop(0, s.color);
     grad.addColorStop(1, "rgba(255,255,255,0)");
@@ -195,69 +173,22 @@ function drawShootingStars() {
   });
 }
 
-// orb update + draw
-function drawOrbs() {
-  orbs.forEach(o => {
-    o.x += o.dx;
-    o.y += o.dy;
-
-    if (o.x < o.radius || o.x > canvas.width - o.radius) o.dx *= -1;
-    if (o.y < o.radius || o.y > canvas.height - o.radius) o.dy *= -1;
-
-    if (
-      o.x + o.radius < 0 || o.x - o.radius > canvas.width ||
-      o.y + o.radius < 0 || o.y - o.radius > canvas.height
-    ) return;
-
-    const grad = ctx.createRadialGradient(
-      o.x, o.y,
-      o.radius * 0.2,
-      o.x, o.y,
-      o.radius
-    );
-    grad.addColorStop(0, "rgba(200,150,255,0.6)");
-    grad.addColorStop(1, "rgba(0,0,0,0)");
-    ctx.fillStyle = grad;
-    ctx.beginPath();
-    ctx.arc(o.x, o.y, o.radius, 0, Math.PI * 2);
-    ctx.fill();
-  });
-}
-
 function draw() {
+  const start = performance.now();
   frameCount++;
   ctx.fillStyle = "#000";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Draw nebula (pre-rendered)
-  nebulaLayers.forEach((n, i) => {
-    n.x += n.dx;
-    n.y += n.dy;
-
-    if (n.x - n.radius > canvas.width) n.x = -n.radius;
-    if (n.x + n.radius < 0) n.x = canvas.width + n.radius;
-    if (n.y - n.radius > canvas.height) n.y = -n.radius;
-    if (n.y + n.radius < 0) n.y = canvas.height + n.radius;
-
-    if (
-      n.x + n.radius < 0 || n.x - n.radius > canvas.width ||
-      n.y + n.radius < 0 || n.y - n.radius > canvas.height
-    ) return;
-
-    ctx.drawImage(
-      nebulaCanvases[i],
-      n.x - n.radius,
-      n.y - n.radius
-    );
-  });
-
   // Draw stars
-  layers.forEach(layer =>
-    layer.stars.forEach(star => {
+  layers.forEach((layer) =>
+    layer.stars.forEach((star) => {
       if (
-        star.x + star.radius < 0 || star.x - star.radius > canvas.width ||
-        star.y + star.radius < 0 || star.y - star.radius > canvas.height
-      ) return;
+        star.x + star.radius < 0 ||
+        star.x - star.radius > canvas.width ||
+        star.y + star.radius < 0 ||
+        star.y - star.radius > canvas.height
+      )
+        return;
 
       // Only update alpha every 5 frames
       if (frameCount % 5 === 0) {
@@ -267,17 +198,30 @@ function draw() {
 
       star.x += star.dx;
       star.y += star.dy;
+      if (star.x < 0) star.x = canvas.width;
+      if (star.x > canvas.width) star.x = 0;
+      if (star.y < 0) star.y = canvas.height;
+      if (star.y > canvas.height) star.y = 0;
 
       ctx.beginPath();
       ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
       ctx.fillStyle = `rgba(${hexToRGB(star.color)},${star.alpha})`;
       ctx.fill();
-    })
+    }),
   );
 
   drawShootingStars();
-  drawOrbs();
+  const end = performance.now();
+  benchmark.update(end - start);
+  if (showBenchmark) {benchmark.draw(ctx);};
   requestAnimationFrame(draw);
 }
 
 draw();
+
+const bgMusic = document.getElementById("bg-music");
+bgMusic.volume = 0.3;
+
+let musicStarted = false;
+musicStarted = true;
+bgMusic.play().catch((err) => console.warn("Autoplay blocked:", err));

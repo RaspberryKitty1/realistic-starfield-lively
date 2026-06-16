@@ -1,0 +1,15 @@
+{
+  "showBenchmark": {
+    "text": "Show Performance Overlay",
+    "type": "checkbox",
+    "value": true
+  },
+  "starDensity": {
+    "text": "Star Density",
+    "type": "slider",
+    "min": 100,
+    "max": 10000,
+    "step": 100,
+    "value": 1700
+  }
+}
