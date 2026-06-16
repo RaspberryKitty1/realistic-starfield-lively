@@ -9,7 +9,7 @@ Developed by **Raspberrykitty1**.
 * **Parallax Star Layers:** Three distinct layers of stars moving at independent depths and speeds to create an immersive 3D parallax effect.
 * **Interactive Live Properties:** Seamlessly integrated with the Lively Wallpaper configuration engine to tweak density scaling and diagnostic visual elements dynamically.
 * **Performance Benchmarking:** Built-in performance tracking subclass (`benchmark.js`) calculating live, average, minimum, and maximum FPS alongside render processing latency.
-* **Ambient Audio Support:** Background track execution with managed fallbacks for browsers restricting automatic autoplay policies.
+* **Ambient Audio Support:** Background track execution with managed fallbacks for environments restricting automatic autoplay policies. The background music is a compressed, audio-only extraction of the track from [this video](https://youtu.be/gCWaRhNUvfc).
 * **Object-Pooled Shooting Stars:** Smoothly animated shooting stars utilizing an object pool to mitigate runtime memory allocations and performance hiccups.
 
 ## 📁 Project Structure
@@ -43,4 +43,5 @@ The following user configurations are exposed directly through the Lively user i
 * **Author:** Raspberrykitty1
 * **Type:** HTML/Canvas Wallpaper (Type 1)
 * **Tags:** Space
+* **Audio Track Source:** [YouTube Video Link](https://youtu.be/gCWaRhNUvfc) (Downloaded & compressed)
 * **Version:** 2 (Configuration Profile 1.0.0.0)
