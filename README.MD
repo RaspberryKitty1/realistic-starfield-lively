@@ -1,4 +1,3 @@
-```markdown
 # Realistic Starfield — Lively Wallpaper (v3)
 
 An interactive, performance-optimized HTML5 Canvas space simulation designed as a dynamic live wallpaper for **Lively Wallpaper**. Version 3 builds upon previous iterations by introducing comprehensive visualization and cosmetic customizations for the performance benchmark overlay.
@@ -50,5 +49,3 @@ The following user configurations can be adjusted in real time through the Livel
 * **Tags:** Space
 * **Audio Track Source:** [YouTube Video Link](https://youtu.be/gCWaRhNUvfc) (Downloaded & compressed)
 * **Version:** 3
-
-```
