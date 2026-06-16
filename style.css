@@ -1,0 +1,16 @@
+/* base styles */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #0f0f0f;
+  color: #e0e0e0;
+  overflow: hidden;
+}
+
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
