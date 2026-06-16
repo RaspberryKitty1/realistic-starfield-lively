@@ -6,6 +6,11 @@ class BenchmarkOverlay {
         this.fpsHistory = [];
         this.renderTimes = [];
         this.maxHistory = maxHistory;
+
+        // Default configurations
+        this.position = "Top-Right";
+        this.textColor = "red";
+        this.bgColor = "rgba(0,0,0,0.5)";
     }
 
     update(renderTime) {
@@ -45,7 +50,6 @@ class BenchmarkOverlay {
         };
     }
 
-    // Helper to enforce consistent string length
     padNum(num, decimals, totalWidth) {
         return num.toFixed(decimals).padStart(totalWidth, ' ');
     }
@@ -56,7 +60,6 @@ class BenchmarkOverlay {
         const padding = 10;
         const lineHeight = 18;
 
-        // 1. Format numbers with fixed padding lengths
         const liveFPS = this.padNum(stats.liveFPS, 1, 5);
         const avgFPS  = this.padNum(stats.avgFPS, 1, 5);
         const minFPS  = this.padNum(stats.minFPS, 1, 5);
@@ -67,14 +70,12 @@ class BenchmarkOverlay {
         const minRender  = this.padNum(stats.minRender, 2, 6);
         const maxRender  = this.padNum(stats.maxRender, 2, 6);
 
-        // 2. Build the strings using the padded values
         const fpsText =
             `FPS: live ${liveFPS} | avg ${avgFPS} | min ${minFPS} | max ${maxFPS}`;
 
         const renderText =
             `Render ms: live ${liveRender} | avg ${avgRender} | min ${minRender} | max ${maxRender}`;
 
-        // 3. Measure text AFTER formatting so the box boundaries never change
         ctx.font = "14px monospace";
 
         const textWidth = Math.max(
@@ -85,16 +86,25 @@ class BenchmarkOverlay {
         const boxWidth = textWidth + padding * 2;
         const boxHeight = lineHeight * 2 + 8;
 
-        const x = ctx.canvas.width - boxWidth - padding;
-        const y = padding;
+        // Dynamic Position Calculations
+        let x = padding;
+        let y = padding;
 
-        // background
-        ctx.fillStyle = "rgba(0,0,0,0.5)";
-        ctx.fillRect(x, y, boxWidth, boxHeight);
+        if (this.position.includes("Right")) {
+            x = ctx.canvas.width - boxWidth - padding;
+        }
+        if (this.position.includes("Bottom")) {
+            y = ctx.canvas.height - boxHeight - padding;
+        }
 
-        ctx.fillStyle = "red";
+        // Draw Background if not invisible
+        if (this.bgColor !== "transparent") {
+            ctx.fillStyle = this.bgColor;
+            ctx.fillRect(x, y, boxWidth, boxHeight);
+        }
 
-        // text
+        // Draw Text using configured color
+        ctx.fillStyle = this.textColor;
         ctx.fillText(fpsText, x + padding, y + lineHeight);
         ctx.fillText(renderText, x + padding, y + lineHeight * 2);
     }

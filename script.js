@@ -70,6 +70,24 @@ function livelyPropertyListener(name, value) {
   if (name === "showBenchmark") {
     showBenchmark = value;
   }
+
+  // Handle Position Dropdown changes
+  if (name === "benchmarkPosition") {
+    const positions = ["Top-Right", "Top-Left", "Bottom-Right", "Bottom-Left"];
+    benchmark.position = positions[value] ?? "Top-Right";
+  }
+
+  // Handle Color Dropdown changes
+  if (name === "benchmarkTextColor") {
+    const colors = ["red", "lime", "cyan", "white", "yellow"];
+    benchmark.textColor = colors[value] ?? "red";
+  }
+
+  // Handle Background Style Dropdown changes
+  if (name === "benchmarkBgVisibility") {
+    const bgStyles = ["rgba(0,0,0,0.5)", "rgba(0,0,0,1)", "transparent"];
+    benchmark.bgColor = bgStyles[value] ?? "rgba(0,0,0,0.5)";
+  }
 }
 
 let lastWidth = canvas.width;

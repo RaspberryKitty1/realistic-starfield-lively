@@ -4,6 +4,24 @@
     "type": "checkbox",
     "value": true
   },
+  "benchmarkPosition": {
+    "text": "Overlay Position",
+    "type": "dropdown",
+    "items": ["Top-Right", "Top-Left", "Bottom-Right", "Bottom-Left"],
+    "value": 0
+  },
+  "benchmarkTextColor": {
+    "text": "Overlay Text Color",
+    "type": "dropdown",
+    "items": ["Red", "Lime Green", "Cyan", "White", "Yellow"],
+    "value": 0
+  },
+  "benchmarkBgVisibility": {
+    "text": "Overlay Background",
+    "type": "dropdown",
+    "items": ["Semi-Transparent", "Opaque Black", "Invisible"],
+    "value": 0
+  },
   "starDensity": {
     "text": "Star Density",
     "type": "slider",
