@@ -1,4 +1,9 @@
 {
+  "muteMusic": {
+    "text": "Mute Background Music",
+    "type": "checkbox",
+    "value": false
+  },
   "showBenchmark": {
     "text": "Show Performance Overlay",
     "type": "checkbox",
@@ -7,19 +12,47 @@
   "benchmarkPosition": {
     "text": "Overlay Position",
     "type": "dropdown",
-    "items": ["Top-Right", "Top-Left", "Bottom-Right", "Bottom-Left"],
+    "items": [
+      "Top-Right",
+      "Top-Left",
+      "Bottom-Right",
+      "Bottom-Left"
+    ],
     "value": 0
   },
   "benchmarkTextColor": {
     "text": "Overlay Text Color",
     "type": "dropdown",
-    "items": ["Red", "Lime Green", "Cyan", "White", "Yellow"],
+    "items": [
+      "Red",
+      "Lime Green",
+      "Cyan",
+      "White",
+      "Yellow",
+      "Magenta",
+      "Orange",
+      "Deep Pink",
+      "Hot Pink",
+      "Gold",
+      "Chartreuse",
+      "Spring Green",
+      "Deep Sky Blue",
+      "Lavender",
+      "Plum",
+      "Aquamarine",
+      "Medium Purple",
+      "Crimson"
+    ],
     "value": 0
   },
   "benchmarkBgVisibility": {
     "text": "Overlay Background",
     "type": "dropdown",
-    "items": ["Semi-Transparent", "Opaque Black", "Invisible"],
+    "items": [
+      "Semi-Transparent",
+      "Opaque Black",
+      "Invisible"
+    ],
     "value": 0
   },
   "starDensity": {
